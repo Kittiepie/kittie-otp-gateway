@@ -22,8 +22,11 @@ import { OtpStore } from './otp.store';
 import { RateLimiterService } from '../redis/rate-limiter.service';
 import { isValidRecipient, maskRecipient, normalizeRecipient } from './recipient';
 
-/** Statuses in which an OTP can still be verified. */
-export const ACTIVE_STATUSES: OtpStatus[] = ['REQUESTED', 'SENT', 'FAILED'];
+/**
+ * Statuses that may still become EXPIRED (by TTL or by a newer OTP). FAILED is left out on
+ * purpose: a delivery failure is final and must stay visible in logs and stats.
+ */
+export const EXPIRABLE_STATUSES: OtpStatus[] = ['REQUESTED', 'SENT'];
 
 const CLIENT_WINDOW_SECONDS = 60;
 
@@ -112,7 +115,7 @@ export class OtpService {
         replacedId,
         { status: 'EXPIRED' },
         { type: 'EXPIRED', detail: { reason: 'replaced', replacedBy: requestId } },
-        ACTIVE_STATUSES,
+        EXPIRABLE_STATUSES,
       );
     }
 
@@ -191,7 +194,7 @@ export class OtpService {
       requestId,
       { status: 'EXPIRED' },
       { type: 'EXPIRED', detail: { reason: 'ttl' } },
-      ACTIVE_STATUSES,
+      EXPIRABLE_STATUSES,
     );
     throw new GoneException('OTP has expired');
   }

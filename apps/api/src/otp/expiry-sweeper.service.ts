@@ -5,6 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 /**
  * Redis forgets expired OTPs by itself, but Postgres would keep showing them as SENT.
  * Once a minute this marks them EXPIRED and writes the audit event, in one SQL statement.
+ * FAILED is final and stays as it is (see EXPIRABLE_STATUSES).
  *
  * Safe with several api replicas: UPDATE locks each row, and a second replica re-checks the
  * WHERE clause after the lock is released, finds status = EXPIRED, and skips the row.
@@ -22,7 +23,7 @@ export class ExpirySweeper {
         WITH expired AS (
           UPDATE otp_requests
           SET status = 'EXPIRED'
-          WHERE status IN ('REQUESTED', 'SENT', 'FAILED') AND expires_at < now()
+          WHERE status IN ('REQUESTED', 'SENT') AND expires_at < now()
           RETURNING id
         )
         INSERT INTO otp_events (request_id, type, detail)
