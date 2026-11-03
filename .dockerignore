@@ -1,0 +1,18 @@
+# Build context is the repo root for every image (each needs the root lockfile and libs/shared).
+# Keep it small and free of secrets: everything listed here never reaches the Docker daemon.
+**/node_modules
+**/dist
+**/.next
+**/coverage
+**/*.tsbuildinfo
+**/src/generated
+.git
+.github
+.vscode
+.idea
+.env
+.env.*
+!.env.example
+docs
+deploy/k8s
+*.log

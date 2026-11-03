@@ -1,0 +1,112 @@
+# The whole system in containers: infra + migration job + api + worker + dashboard.
+#   pnpm stack:up     (= docker compose -f deploy/compose/docker-compose.yml up -d --build --wait)
+# Works on a fresh clone without a .env file: every value below has a development default.
+# Containers reach each other by service name (postgres, redis, api, ...) on the compose network.
+name: otp
+
+include:
+  - docker-compose.infra.yml
+
+x-database-url: &database-url postgresql://${POSTGRES_USER:-otp}:${POSTGRES_PASSWORD:-otp_dev_password}@postgres:5432/${POSTGRES_DB:-otp_gateway}?schema=public
+
+x-app-env: &app-env
+  NODE_ENV: production
+  LOG_LEVEL: ${LOG_LEVEL:-info}
+  DATABASE_URL: *database-url
+  RABBITMQ_URL: amqp://${RABBITMQ_DEFAULT_USER:-otp}:${RABBITMQ_DEFAULT_PASS:-otp_dev_password}@rabbitmq:5672
+  OTP_TTL_SECONDS: ${OTP_TTL_SECONDS:-300}
+
+services:
+  # One-off job: apply migrations, seed the admin, then exit. The api waits for it to succeed.
+  migrate:
+    build:
+      context: ../..
+      dockerfile: apps/api/Dockerfile
+      target: migrate
+    image: otp-migrate:local
+    environment:
+      DATABASE_URL: *database-url
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@otp.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin12345}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    build:
+      context: ../..
+      dockerfile: apps/api/Dockerfile
+    image: otp-api:local
+    environment:
+      <<: *app-env
+      API_PORT: 3000
+      REDIS_URL: redis://redis:6379
+      OTP_HMAC_SECRET: ${OTP_HMAC_SECRET:-dev-only-hmac-secret-change-me-in-prod}
+      JWT_SECRET: ${JWT_SECRET:-dev-only-jwt-secret-change-me-in-prod}
+      OTP_MAX_ATTEMPTS: ${OTP_MAX_ATTEMPTS:-5}
+      DASHBOARD_ORIGIN: http://localhost:3001
+    ports:
+      - '127.0.0.1:3000:3000'
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:3000/health/ready']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: ../..
+      dockerfile: apps/worker/Dockerfile
+    image: otp-worker:local
+    environment:
+      <<: *app-env
+      WORKER_PORT: 3002
+      WORKER_SIMULATE_FAILURE: ${WORKER_SIMULATE_FAILURE:-false}
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      SMTP_FROM: ${SMTP_FROM:-OTP Gateway <no-reply@otp.local>}
+    ports:
+      - '127.0.0.1:3002:3002'
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+      mailpit:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:3002/health/ready']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: ../..
+      dockerfile: apps/dashboard/Dockerfile
+    image: otp-dashboard:local
+    environment:
+      # Server-side calls go container-to-container; the browser only ever talks to the dashboard.
+      API_BASE_URL: http://api:3000
+      # Shown as a link in the browser, so it's the address on your machine.
+      MAILPIT_URL: http://localhost:8025
+    ports:
+      - '127.0.0.1:3001:3001'
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:3001/login']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped

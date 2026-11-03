@@ -1,18 +1,21 @@
+# Infrastructure only (Postgres, Redis, RabbitMQ, Mailpit) for local development.
+# The apps run on your machine with hot reload: pnpm infra:up, then pnpm --filter api start:dev.
+# Values come from the root .env (--env-file); the :- defaults apply when it is missing.
 name: otp
 
 services:
   postgres:
     image: postgres:16
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:-otp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-otp_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-otp_gateway}
     ports:
       - '127.0.0.1:5432:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER:-otp} -d $${POSTGRES_DB:-otp_gateway}']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -35,8 +38,8 @@ services:
     # RabbitMQ names its data dir after the hostname; a fixed one keeps the volume reusable.
     hostname: rabbitmq
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-otp}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-otp_dev_password}
     ports:
       - '127.0.0.1:5672:5672'
       - '127.0.0.1:15672:15672'
