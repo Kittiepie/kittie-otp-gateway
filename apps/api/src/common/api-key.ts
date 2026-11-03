@@ -1,4 +1,5 @@
-import { createHash, randomBytes } from 'node:crypto';
+import { randomBytes } from 'node:crypto';
+import { sha256Hex } from './crypto';
 
 /**
  * API key format: `otp_<12 hex>.<43 base64url chars>`
@@ -20,7 +21,7 @@ export function generateApiKey(): GeneratedApiKey {
 }
 
 export function hashApiKey(fullKey: string): string {
-  return createHash('sha256').update(fullKey).digest('hex');
+  return sha256Hex(fullKey);
 }
 
 /** Returns the prefix, or null when the value cannot be one of our keys. */

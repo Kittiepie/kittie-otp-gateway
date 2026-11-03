@@ -2,10 +2,12 @@ import { Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { randomUUID } from 'node:crypto';
+import { ScheduleModule } from '@nestjs/schedule';
 import { LoggerModule } from 'nestjs-pino';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { Env, validateEnv } from './config/env.validation';
 import { HealthModule } from './health/health.module';
+import { OtpModule } from './otp/otp.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
 
@@ -45,7 +47,9 @@ import { RedisModule } from './redis/redis.module';
     }),
     PrismaModule,
     RedisModule,
+    ScheduleModule.forRoot(),
     HealthModule,
+    OtpModule,
   ],
   providers: [
     // Registered here (not in main.ts) so they also apply in tests that build the module.

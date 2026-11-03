@@ -9,6 +9,7 @@
     "dist"
   ],
   "scripts": {
+    "postinstall": "tsc -p tsconfig.json",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
