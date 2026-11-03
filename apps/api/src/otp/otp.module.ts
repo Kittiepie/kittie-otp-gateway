@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ApiKeyGuard } from '../auth/api-key.guard';
-import { OtpJobPublisher } from '../messaging/otp-job.publisher';
 import { ExpirySweeper } from './expiry-sweeper.service';
 import { IdempotencyService } from './idempotency.service';
 import { OtpController } from './otp.controller';
@@ -15,7 +14,6 @@ import { RateLimiterService } from './rate-limiter.service';
     OtpStore,
     RateLimiterService,
     IdempotencyService,
-    OtpJobPublisher,
     ApiKeyGuard,
     ExpirySweeper,
   ],

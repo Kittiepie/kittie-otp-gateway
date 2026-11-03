@@ -1,15 +1,15 @@
-import { Injectable, Logger } from '@nestjs/common';
-import type { SendOtpJob } from '@otp/shared';
+import { Injectable } from '@nestjs/common';
+import { OTP_EXCHANGE, ROUTING_KEYS, type SendOtpJob } from '@otp/shared';
+import { RabbitMqService } from './rabbitmq.service';
 
-/**
- * Phase 2 stand-in for delivery: logs the code so the flow can be tested with curl.
- * Phase 3 replaces this with a RabbitMQ publisher.
- */
+/** Puts a delivery job on the `otp` exchange; the worker picks it up from `otp.send`. */
 @Injectable()
 export class OtpJobPublisher {
-  private readonly logger = new Logger(OtpJobPublisher.name);
+  constructor(private readonly rabbit: RabbitMqService) {}
 
-  async publish(job: SendOtpJob): Promise<void> {
-    this.logger.warn(`[dev only] OTP for request ${job.requestId}: ${job.code}`);
+  publish(job: SendOtpJob): Promise<void> {
+    return this.rabbit.publishJson(OTP_EXCHANGE, ROUTING_KEYS.send, job, {
+      messageId: `${job.requestId}:${job.attempt}`,
+    });
   }
 }
