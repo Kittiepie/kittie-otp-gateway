@@ -7,6 +7,14 @@ export default defineConfig([
   js.configs.recommended,
   tseslint.configs.recommended,
   {
+    // .cjs files (e.g. .pnpmfile.cjs) are CommonJS: `module` and `require` exist there.
+    files: ['**/*.cjs'],
+    languageOptions: {
+      sourceType: 'commonjs',
+      globals: { module: 'writable', require: 'readonly', __dirname: 'readonly' },
+    },
+  },
+  {
     rules: {
       // `_name` marks a value that is intentionally unused (e.g. pulled out of an object to drop it).
       '@typescript-eslint/no-unused-vars': [
