@@ -18,13 +18,14 @@ async function main() {
 
   const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: DATABASE_URL }) });
   try {
+    const email = ADMIN_EMAIL.trim().toLowerCase();
     const passwordHash = await hash(ADMIN_PASSWORD);
     await prisma.admin.upsert({
-      where: { email: ADMIN_EMAIL },
+      where: { email },
       update: { passwordHash },
-      create: { email: ADMIN_EMAIL, passwordHash },
+      create: { email, passwordHash },
     });
-    console.log(`Admin ready: ${ADMIN_EMAIL}`);
+    console.log(`Admin ready: ${email}`);
 
     if ((await prisma.client.count()) === 0) {
       const key = generateApiKey();

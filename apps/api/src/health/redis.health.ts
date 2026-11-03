@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { HealthIndicatorService } from '@nestjs/terminus';
 import Redis from 'ioredis';
-import { REDIS } from '../redis/redis.module';
+import { REDIS } from '../redis/redis.constants';
 
 @Injectable()
 export class RedisHealthIndicator {

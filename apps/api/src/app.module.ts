@@ -4,6 +4,7 @@ import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { randomUUID } from 'node:crypto';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LoggerModule } from 'nestjs-pino';
+import { AdminModule } from './admin/admin.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { Env, validateEnv } from './config/env.validation';
 import { HealthModule } from './health/health.module';
@@ -52,6 +53,7 @@ import { RedisModule } from './redis/redis.module';
     ScheduleModule.forRoot(),
     HealthModule,
     OtpModule,
+    AdminModule,
   ],
   providers: [
     // Registered here (not in main.ts) so they also apply in tests that build the module.

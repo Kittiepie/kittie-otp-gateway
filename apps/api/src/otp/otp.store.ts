@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Redis, { type Result } from 'ioredis';
-import { REDIS } from '../redis/redis.module';
+import { REDIS } from '../redis/redis.constants';
 
 /**
  * Redis side of an OTP. All multi-step operations are Lua scripts: Redis runs a script as one

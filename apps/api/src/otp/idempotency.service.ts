@@ -9,7 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
 import { sha256Hex } from '../common/crypto';
 import type { Env } from '../config/env.validation';
-import { REDIS } from '../redis/redis.module';
+import { REDIS } from '../redis/redis.constants';
 
 interface StoredEntry<T> {
   state: 'pending' | 'done';

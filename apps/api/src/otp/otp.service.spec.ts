@@ -15,7 +15,7 @@ import type { OtpJobPublisher } from '../messaging/otp-job.publisher';
 import type { PrismaService } from '../prisma/prisma.service';
 import { OtpService } from './otp.service';
 import type { OtpStore } from './otp.store';
-import type { RateLimiterService } from './rate-limiter.service';
+import type { RateLimiterService } from '../redis/rate-limiter.service';
 
 const SECRET = 'test-secret-at-least-16-chars';
 const REQUEST_ID = '0b9f3c1e-8a52-4c1d-9d0e-6f7a8b9c0d1e';

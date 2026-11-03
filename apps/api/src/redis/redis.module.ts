@@ -2,9 +2,8 @@ import { Global, Inject, Module, OnApplicationShutdown } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
 import type { Env } from '../config/env.validation';
-
-/** Injection token for the shared ioredis client: `@Inject(REDIS) redis: Redis`. */
-export const REDIS = Symbol('REDIS');
+import { RateLimiterService } from './rate-limiter.service';
+import { REDIS } from './redis.constants';
 
 @Global()
 @Module({
@@ -18,8 +17,9 @@ export const REDIS = Symbol('REDIS');
           maxRetriesPerRequest: 2,
         }),
     },
+    RateLimiterService,
   ],
-  exports: [REDIS],
+  exports: [REDIS, RateLimiterService],
 })
 export class RedisModule implements OnApplicationShutdown {
   constructor(@Inject(REDIS) private readonly redis: Redis) {}

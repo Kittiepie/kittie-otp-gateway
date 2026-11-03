@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Redis, { type Result } from 'ioredis';
 import { RateLimitedException } from '../common/exceptions/rate-limited.exception';
-import { REDIS } from '../redis/redis.module';
+import { REDIS } from './redis.constants';
 
 /**
  * Fixed-window counter: INCR the key, and on the first hit set its expiry to the window length.

@@ -5,18 +5,10 @@ import { IdempotencyService } from './idempotency.service';
 import { OtpController } from './otp.controller';
 import { OtpService } from './otp.service';
 import { OtpStore } from './otp.store';
-import { RateLimiterService } from './rate-limiter.service';
 
 @Module({
   controllers: [OtpController],
-  providers: [
-    OtpService,
-    OtpStore,
-    RateLimiterService,
-    IdempotencyService,
-    ApiKeyGuard,
-    ExpirySweeper,
-  ],
+  providers: [OtpService, OtpStore, IdempotencyService, ApiKeyGuard, ExpirySweeper],
   exports: [OtpService],
 })
 export class OtpModule {}

@@ -19,7 +19,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { RequestOtpDto, RequestOtpResponseDto } from './dto/request-otp.dto';
 import { VerifyOtpDto, VerifyOtpResponseDto } from './dto/verify-otp.dto';
 import { OtpStore } from './otp.store';
-import { RateLimiterService } from './rate-limiter.service';
+import { RateLimiterService } from '../redis/rate-limiter.service';
 import { isValidRecipient, maskRecipient, normalizeRecipient } from './recipient';
 
 /** Statuses in which an OTP can still be verified. */
