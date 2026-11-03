@@ -1,0 +1,30 @@
+{
+  "name": "e2e",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Black-box test: real Postgres, Redis, RabbitMQ and Mailpit in Testcontainers, built api and worker as processes",
+  "scripts": {
+    "test": "jest --runInBand",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@testcontainers/postgresql": "^12.2.1",
+    "@testcontainers/rabbitmq": "^12.2.1",
+    "@testcontainers/redis": "^12.2.1",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^26.6.6",
+    "jest": "^30.5.2",
+    "testcontainers": "^12.2.1",
+    "ts-jest": "^29.4.15",
+    "typescript": "~6.0.3"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "rootDir": "src",
+    "testRegex": ".*.e2e-spec.ts$",
+    "transform": {
+      "^.+.ts$": "ts-jest"
+    },
+    "testTimeout": 240000
+  }
+}

@@ -15,3 +15,5 @@ ignoredBuiltDependencies:
   - unrs-resolver
   - '@parcel/watcher'
   - '@scarf/scarf'
+  - cpu-features
+  - protobufjs

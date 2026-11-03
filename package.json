@@ -10,10 +10,11 @@
     "infra:logs": "docker compose -f deploy/compose/docker-compose.infra.yml --env-file .env logs -f",
     "build": "pnpm -r --if-present build",
     "typecheck": "pnpm -r --if-present typecheck",
-    "test": "pnpm -r --if-present test",
+    "test": "pnpm -r --filter \"!e2e\" --if-present test",
     "lint": "eslint . --ignore-pattern \"apps/dashboard/**\" && pnpm --filter dashboard lint",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test:e2e": "pnpm --filter \"api...\" --filter \"worker...\" build && pnpm --filter e2e test"
   },
   "keywords": [],
   "author": "",
