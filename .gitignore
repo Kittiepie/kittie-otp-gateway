@@ -156,3 +156,7 @@ Thumbs.db
 next-env.d.ts
 .vercel
 *.pem
+
+CLAUDE.md
+# Generated Prisma client
+**/src/generated/

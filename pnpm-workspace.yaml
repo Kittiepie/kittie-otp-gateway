@@ -1,9 +1,17 @@
 packages:
   - 'apps/*'
   - 'libs/*'
+  - 'tests/*'
 
-# Packages whose install scripts pnpm should skip (they ship prebuilt binaries).
+# pnpm 10 runs no dependency install scripts unless they are listed here.
+onlyBuiltDependencies:
+  - '@prisma/engines'
+  - prisma
+  - esbuild
+
+# Skipped on purpose: prebuilt binaries already ship with them, or the script is just telemetry.
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
   - '@parcel/watcher'
+  - '@scarf/scarf'
