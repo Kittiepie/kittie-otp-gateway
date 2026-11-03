@@ -151,3 +151,8 @@ vite.config.ts.timestamp-*
 .DS_Store
 Thumbs.db
 .idea/
+
+# Next.js
+next-env.d.ts
+.vercel
+*.pem

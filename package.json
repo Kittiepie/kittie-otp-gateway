@@ -1,13 +1,33 @@
 {
   "name": "kittie-otp-gateway",
   "version": "1.0.0",
-  "description": "",
+  "private": true,
+  "description": "OTP issuing and verification gateway (NestJS, Next.js, Redis, RabbitMQ)",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "infra:up": "docker compose -f deploy/compose/docker-compose.infra.yml --env-file .env up -d --wait",
+    "infra:down": "docker compose -f deploy/compose/docker-compose.infra.yml --env-file .env down",
+    "infra:ps": "docker compose -f deploy/compose/docker-compose.infra.yml --env-file .env ps",
+    "infra:logs": "docker compose -f deploy/compose/docker-compose.infra.yml --env-file .env logs -f",
+    "build": "pnpm -r --if-present build",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test",
+    "lint": "eslint . --ignore-pattern \"apps/dashboard/**\" && pnpm --filter dashboard lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": ">=26",
+    "pnpm": "10.34.5"
+  },
   "packageManager": "pnpm@10.34.5",
-  "private": true
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.14.0",
+    "prettier": "^3.9.10",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.72.1"
+  }
 }

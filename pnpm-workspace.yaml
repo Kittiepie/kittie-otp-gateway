@@ -1,3 +1,9 @@
 packages:
-  - "apps/*"
-  - "libs/*"
+  - 'apps/*'
+  - 'libs/*'
+
+# Packages whose install scripts pnpm should skip (they ship prebuilt binaries).
+ignoredBuiltDependencies:
+  - sharp
+  - unrs-resolver
+  - '@parcel/watcher'
