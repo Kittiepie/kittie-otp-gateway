@@ -3,7 +3,15 @@ import type { Metadata } from 'next';
 import Form from 'next/form';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { Button, Card, Field, inputClass, PageHeader, StatusBadge, TableSkeleton } from '@/components/ui';
+import {
+  Button,
+  Card,
+  Field,
+  inputClass,
+  PageHeader,
+  StatusBadge,
+  TableSkeleton,
+} from '@/components/ui';
 import { api } from '@/lib/api';
 import { formatDateTime } from '@/lib/format';
 import type { Client, LogsPage } from '@/lib/types';
@@ -91,10 +99,20 @@ async function Logs({ searchParams }: Pick<PageProps<'/logs'>, 'searchParams'>) 
             />
           </Field>
           <Field label="From">
-            <input name="from" type="date" defaultValue={param(params, 'from')} className={inputClass} />
+            <input
+              name="from"
+              type="date"
+              defaultValue={param(params, 'from')}
+              className={inputClass}
+            />
           </Field>
           <Field label="To">
-            <input name="to" type="date" defaultValue={param(params, 'to')} className={inputClass} />
+            <input
+              name="to"
+              type="date"
+              defaultValue={param(params, 'to')}
+              className={inputClass}
+            />
           </Field>
           <div className="flex gap-2">
             <Button type="submit">Filter</Button>
@@ -149,7 +167,9 @@ async function Logs({ searchParams }: Pick<PageProps<'/logs'>, 'searchParams'>) 
                           <span className="font-medium">{event.type}</span>{' '}
                           {formatDateTime(event.createdAt)}
                           {event.detail && (
-                            <code className="ml-1 text-zinc-500">{JSON.stringify(event.detail)}</code>
+                            <code className="ml-1 text-zinc-500">
+                              {JSON.stringify(event.detail)}
+                            </code>
                           )}
                         </li>
                       ))}

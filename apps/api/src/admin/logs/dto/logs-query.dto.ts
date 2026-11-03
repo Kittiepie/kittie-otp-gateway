@@ -1,6 +1,16 @@
 import { OTP_CHANNELS, OTP_STATUSES, type OtpChannel, type OtpStatus } from '@otp/shared';
 import { Type } from 'class-transformer';
-import { IsIn, IsInt, IsISO8601, IsOptional, IsString, IsUUID, Max, MaxLength, Min } from 'class-validator';
+import {
+  IsIn,
+  IsInt,
+  IsISO8601,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Max,
+  MaxLength,
+  Min,
+} from 'class-validator';
 
 export class LogsQueryDto {
   @IsOptional()
